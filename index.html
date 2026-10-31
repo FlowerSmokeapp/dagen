@@ -135,10 +135,10 @@ pre.out{max-height:200px;overflow:auto;font-size:12px;background:color-mix(in sr
 .install .row{justify-content:space-between}
 /* Desktop: show the app inside a phone as a prototype */
 @media (min-width:760px) and (min-height:620px) and (hover:hover) and (pointer:fine){
-  body{display:flex;align-items:center;justify-content:center;padding:24px;min-height:100%;
+  body{display:flex;align-items:center;justify-content:center;padding:8px;min-height:100%;overflow:hidden;
     background:radial-gradient(ellipse at 30% 20%,#e6ddcf,var(--desk) 70%)}
-  .device{position:relative;inset:auto;flex:none;width:390px;height:min(844px,calc(100vh - 48px));border-radius:56px;
-    border:12px solid #1e1b18;box-shadow:0 0 0 2px #4a443d,0 30px 80px rgba(40,25,10,.35)}
+  .device{position:relative;inset:auto;flex:none;width:420px;height:860px;zoom:var(--z,1);border-radius:56px;
+    border:10px solid #1e1b18;box-shadow:0 0 0 2px #4a443d,0 30px 80px rgba(40,25,10,.35)}
   .book{padding-top:44px}
   .notch{display:block;position:absolute;top:10px;left:50%;transform:translateX(-50%);width:118px;height:34px;border-radius:20px;background:#1e1b18;z-index:30}
   .statusbar{position:absolute;top:14px;left:34px;right:34px;display:flex;justify-content:space-between;font:600 15px/1 -apple-system,system-ui,sans-serif;color:var(--ink);z-index:29;pointer-events:none}
@@ -479,6 +479,9 @@ function installHint(){
   return `<div class="install"><b>Læg DAGEN på hjemmeskærmen</b><div>Åbn browserens menu (⋮) og vælg <strong>Installér app</strong> eller <strong>Føj til startskærm</strong>.</div><div class="row"><span></span><button class="btn ghost" id="ihClose">Forstået</button></div></div>`;
 }
 if("serviceWorker" in navigator && location.protocol.startsWith("http")) navigator.serviceWorker.register("sw.js").catch(()=>{});
+// desktop: scale the phone to fill most of the window height
+const fit=()=>document.documentElement.style.setProperty("--z",Math.min(1.8,(innerHeight-16)/884,(innerWidth-16)/444).toFixed(3));
+fit();addEventListener("resize",fit);
 // desktop: status bar clock
 const tick=()=>{const n=new Date();document.getElementById("clock").textContent=n.getHours()+":"+String(n.getMinutes()).padStart(2,"0")};tick();setInterval(tick,30000);
 

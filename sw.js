@@ -1,5 +1,5 @@
 // DAGEN service worker: the app works offline after the first visit
-const CACHE = "dagen-v2";
+const CACHE = "dagen-v3";
 const SHELL = ["./", "index.html", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png", "icons/apple-touch-icon.png"];
 
 self.addEventListener("install", e => {

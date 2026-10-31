@@ -1,11 +1,12 @@
-# DAGEN – dagbog og taknemmelighed
+# DAGEN – journal and gratitude
 
-En lille dagbog som web-app (PWA). Ét spørgsmål om dagen, dit humør, tekst og billeder, og hele året i farver.
+A small journal as a web app (PWA). One question a day, your mood, text and photos, and your whole year in colour.
 
-- **På mobil** fylder appen hele skærmen og kan lægges på hjemmeskærmen:
-  - iPhone (Safari): **Del** → **Føj til hjemmeskærm**
-  - Android (Chrome): **⋮** → **Installér app**
-- Virker uden internet efter første besøg. Alt gemmes kun på din egen enhed.
+- **On a computer** the app is shown inside a phone, as a prototype.
+- **On a phone** the app fills the screen and can be added to the home screen:
+  - iPhone (Safari): **Share** → **Add to Home Screen**
+  - Android (Chrome): **⋮** → **Install app**
+- Works offline after the first visit. Everything is stored only on your own device.
 
-Gratis: tekstindlæg, humør og året i farver.
-Premium (prototype, 29 kr./md. eller 199 kr./år): billeder, backup, PDF-eksport, flere spørgsmål og temaer.
+Free: text entries, mood and your year in colour.
+Premium (prototype, DKK 29/month or DKK 199/year): photos, backup, PDF export, more questions and themes.

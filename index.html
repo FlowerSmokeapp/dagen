@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="da">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#fbf6ec">
-<meta name="description" content="DAGEN – en lille dagbog til taknemmelighed. Ét spørgsmål om dagen, dit humør og året i farver.">
+<meta name="description" content="DAGEN – a small gratitude journal. One question a day, your mood, and your year in colour.">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -12,7 +12,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<title>DAGEN dagbog</title>
+<title>DAGEN journal</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
@@ -90,7 +90,7 @@ nav.tabs button[aria-current="page"]{color:var(--ink);box-shadow:inset 0 3px 0 v
 .entry p{margin:0;white-space:pre-wrap}
 .example{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);border:1px dashed var(--ink-soft);border-radius:4px;padding:0 5px}
 /* year in colours */
-.year{display:grid;grid-template-columns:26px repeat(31,1fr);gap:1.5px;font-size:11px;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+.year{display:grid;grid-template-columns:26px repeat(31,minmax(0,1fr));gap:1.5px;font-size:11px;color:var(--ink-soft);font-variant-numeric:tabular-nums}
 .year .cell{aspect-ratio:1;border-radius:2px;background:var(--line);opacity:.55}
 .year .cell.has{opacity:1}
 .year .cell.none{background:transparent;opacity:1}
@@ -165,21 +165,21 @@ pre.out{max-height:200px;overflow:auto;font-size:12px;background:color-mix(in sr
 <div class="statusbar" aria-hidden="true"><span id="clock">9:41</span><span>●●● ▮</span></div>
 <div class="book">
   <main id="view" class="ruled" tabindex="-1"></main>
-  <nav class="tabs" aria-label="Sider">
-    <button data-tab="idag">I dag</button>
-    <button data-tab="bog">Bogen</button>
-    <button data-tab="aar">Året</button>
-    <button data-tab="mig">Mere</button>
+  <nav class="tabs" aria-label="Pages">
+    <button data-tab="idag">Today</button>
+    <button data-tab="bog">Journal</button>
+    <button data-tab="aar">Year</button>
+    <button data-tab="mig">More</button>
   </nav>
 </div>
 
 <div class="overlay" id="lock" hidden>
   <div class="lockbox" id="lockbox">
     <h2>DAGEN</h2>
-    <div class="small" id="lockMsg">Indtast din kode</div>
+    <div class="small" id="lockMsg">Enter your passcode</div>
     <div class="pins" id="pins"><i></i><i></i><i></i><i></i></div>
     <div class="pad" id="pad"></div>
-    <div class="small">Demo-kode: 1234. Face ID bruges i mobil-appen.</div>
+    <div class="small">Demo passcode: 1234. The mobile app uses Face ID.</div>
   </div>
 </div>
 
@@ -192,27 +192,27 @@ pre.out{max-height:200px;overflow:auto;font-size:12px;background:color-mix(in sr
 
 <script>
 const MOODS=[
-  {id:1,name:"Tung",color:"var(--m1)"},
-  {id:2,name:"Stille",color:"var(--m2)"},
+  {id:1,name:"Heavy",color:"var(--m1)"},
+  {id:2,name:"Quiet",color:"var(--m2)"},
   {id:3,name:"Okay",color:"var(--m3)"},
-  {id:4,name:"God",color:"var(--m4)"},
-  {id:5,name:"Strålende",color:"var(--m5)"}
+  {id:4,name:"Good",color:"var(--m4)"},
+  {id:5,name:"Radiant",color:"var(--m5)"}
 ];
 const FREE_Q=[
-  "Hvad gik godt i dag?","Hvem er du taknemmelig for lige nu?","Hvad fik dig til at smile i dag?",
-  "Hvad lærte du i dag?","Hvilket lille øjeblik vil du huske?","Hvad gjorde du godt for dig selv i dag?",
-  "Hvad glæder du dig til i morgen?"
+  "What went well today?","Who are you grateful for right now?","What made you smile today?",
+  "What did you learn today?","Which small moment do you want to remember?","What did you do for yourself today?",
+  "What are you looking forward to tomorrow?"
 ];
 const PREM_Q=[
-  "Hvilken lyd, duft eller smag husker du fra i dag?","Hvad ville du sige til dig selv for et år siden?",
-  "Hvornår følte du dig mest som dig selv i dag?","Hvad slap du i dag, som du ikke behøvede at bære?",
-  "Hvem gjorde din dag lidt lettere, og ved de det?","Hvad var svært i dag, og hvordan klarede du det?",
-  "Hvilket sted var du glad for at være i dag?","Hvad vil du gøre mere af i næste uge?",
-  "Hvad er du stolt af, som ingen andre har set?","Hvis i dag var et billede, hvad forestillede det så?"
+  "Which sound, smell or taste do you remember from today?","What would you tell yourself a year ago?",
+  "When did you feel most like yourself today?","What did you let go of today that you didn't need to carry?",
+  "Who made your day a little easier, and do they know?","What was hard today, and how did you handle it?",
+  "Which place were you happy to be in today?","What do you want to do more of next week?",
+  "What are you proud of that no one else has seen?","If today were a picture, what would it show?"
 ];
-const MONTHS=["jan","feb","mar","apr","maj","jun","jul","aug","sep","okt","nov","dec"];
-const MONTHS_LONG=["januar","februar","marts","april","maj","juni","juli","august","september","oktober","november","december"];
-const DAYS=["søndag","mandag","tirsdag","onsdag","torsdag","fredag","lørdag"];
+const MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const MONTHS_LONG=["January","February","March","April","May","June","July","August","September","October","November","December"];
+const DAYS=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 
 const store={
   get(k,d){try{const v=localStorage.getItem("dagen."+k);return v?JSON.parse(v):d}catch(e){return d}},
@@ -237,13 +237,13 @@ let state={
 function seed(){
   const out={}; const y=today.getFullYear();
   const texts=[
-    "Gik en tur langs havnen med Ida. Solen kom frem lige da vi satte os.",
-    "Fik endelig ryddet skrivebordet. Det føles som at trække vejret igen.",
-    "Mormor ringede bare for at sige hej.",
-    "Lang dag på arbejdet, men kaffen i pausen var god.",
-    "Bagte boller og huset duftede af kardemomme hele eftermiddagen.",
-    "Regnvejr. Læste tre kapitler under tæppet.",
-    "Cyklede hjem i modvind og grinede af det."
+    "Walked along the harbour with Ida. The sun came out just as we sat down.",
+    "Finally cleared my desk. It feels like I can breathe again.",
+    "Grandma called just to say hi.",
+    "Long day at work, but the coffee on my break was good.",
+    "Baked buns and the house smelled of cardamom all afternoon.",
+    "Rainy day. Read three chapters under a blanket.",
+    "Cycled home against the wind and laughed about it."
   ];
   let seedN=7;
   const rnd=()=>{seedN=(seedN*9301+49297)%233280;return seedN/233280};
@@ -255,6 +255,9 @@ function seed(){
   }
   return out;
 }
+// Replace example pages written in another language, keep the user's own pages
+if(state.entries&&store.get("lang","da")!=="en"){const own={};for(const k in state.entries)if(!state.entries[k].example)own[k]=state.entries[k];state.entries={...seed(),...own};store.set("entries",state.entries)}
+store.set("lang","en");
 if(!state.entries){state.entries=seed();store.set("entries",state.entries)}
 
 function questionFor(dateStr){
@@ -271,7 +274,7 @@ document.querySelectorAll("nav.tabs button").forEach(b=>b.onclick=()=>go(b.datas
 
 function render(){({idag:renderToday,bog:renderBook,aar:renderYear,mig:renderSettings})[state.tab]()}
 
-function longDate(d){return DAYS[d.getDay()]+" "+d.getDate()+". "+MONTHS_LONG[d.getMonth()]}
+function longDate(d){return DAYS[d.getDay()]+", "+MONTHS_LONG[d.getMonth()]+" "+d.getDate()}
 
 function renderToday(){
   const e=state.entries[TODAY];
@@ -279,22 +282,22 @@ function renderToday(){
   const d=state.draft;
   view.innerHTML=`<div class="stack">
     ${installHint()}
-    <div class="top"><h1>I dag</h1><span class="date">${longDate(today)}</span></div>
-    <div><div class="small">Dagens spørgsmål</div><div class="prompt" id="q">${esc(d.q)}</div>
-      ${state.premium?`<button class="btn ghost" id="newq" style="margin-top:8px;padding:4px 14px;font-size:13px">Vis et andet spørgsmål</button>`:""}</div>
-    <div><div class="small" id="moodlbl">Hvordan har du det?</div>
+    <div class="top"><h1>Today</h1><span class="date">${longDate(today)}</span></div>
+    <div><div class="small">Today's question</div><div class="prompt" id="q">${esc(d.q)}</div>
+      ${state.premium?`<button class="btn ghost" id="newq" style="margin-top:8px;padding:4px 14px;font-size:13px">Show another question</button>`:""}</div>
+    <div><div class="small" id="moodlbl">How are you feeling?</div>
       <div class="moods" role="group" aria-labelledby="moodlbl">${MOODS.map(m=>`<button class="mood" data-m="${m.id}" aria-pressed="${d.mood===m.id}"><span class="dot" style="background:${m.color}"></span>${m.name}</button>`).join("")}</div></div>
-    <label for="txt" class="small">Skriv løs</label>
-    <textarea id="txt" placeholder="Det, der gik godt i dag, var …">${esc(d.text)}</textarea>
+    <label for="txt" class="small">Write freely</label>
+    <textarea id="txt" placeholder="Today I was grateful for …">${esc(d.text)}</textarea>
     <div>
-      <div class="row"><span class="small">Billeder</span>${state.premium?"":`<span class="lock-badge">Premium</span>`}</div>
-      <div class="photos" id="photos" style="margin-top:8px">${d.photos.map(p=>`<img src="${p}" alt="Billede fra dagen">`).join("")}</div>
+      <div class="row"><span class="small">Photos</span>${state.premium?"":`<span class="lock-badge">Premium</span>`}</div>
+      <div class="photos" id="photos" style="margin-top:8px">${d.photos.map(p=>`<img src="${p}" alt="Photo from the day">`).join("")}</div>
       <div class="row" style="margin-top:10px">
         <input type="file" id="file" accept="image/*" multiple hidden>
-        <button class="btn ghost" id="addph">Tilføj billede</button>
+        <button class="btn ghost" id="addph">Add photo</button>
       </div>
     </div>
-    <div class="row"><button class="btn" id="save">Gem dagen</button><span class="saved" id="savedmsg">${e?"Gemt i bogen":""}</span></div>
+    <div class="row"><button class="btn" id="save">Save the day</button><span class="saved" id="savedmsg">${e?"Saved to your journal":""}</span></div>
   </div>`;
   const ih=view.querySelector("#ihClose");if(ih) ih.onclick=()=>{store.set("hideInstall",true);renderToday()};
   const ib=view.querySelector("#ihInstall");if(ib) ib.onclick=async()=>{deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;renderToday()};
@@ -302,17 +305,17 @@ function renderToday(){
   view.querySelector("#txt").oninput=ev=>{d.text=ev.target.value;view.querySelector("#savedmsg").textContent=""};
   const nq=view.querySelector("#newq");
   if(nq) nq.onclick=()=>{const pool=FREE_Q.concat(PREM_Q);let q;do{q=pool[Math.floor(Math.random()*pool.length)]}while(q===d.q);d.q=q;view.querySelector("#q").textContent=q};
-  view.querySelector("#addph").onclick=()=>state.premium?view.querySelector("#file").click():paywall("Gem billeder sammen med dine dage");
+  view.querySelector("#addph").onclick=()=>state.premium?view.querySelector("#file").click():paywall("Keep photos with your days");
   view.querySelector("#file").onchange=async ev=>{
     for(const f of [...ev.target.files].slice(0,6-d.photos.length)) d.photos.push(await shrink(f));
     renderToday();
   };
   view.querySelector("#save").onclick=()=>{
     const msg=view.querySelector("#savedmsg");
-    if(!d.mood){msg.textContent="Vælg dit humør først";msg.style.color="var(--accent)";return}
-    if(!d.text.trim()){msg.textContent="Skriv mindst en linje";msg.style.color="var(--accent)";return}
+    if(!d.mood){msg.textContent="Pick your mood first";msg.style.color="var(--accent)";return}
+    if(!d.text.trim()){msg.textContent="Write at least one line";msg.style.color="var(--accent)";return}
     state.entries[TODAY]={mood:d.mood,q:d.q,text:d.text.trim(),photos:d.photos};save();
-    msg.style.color="";msg.textContent="Gemt i bogen";
+    msg.style.color="";msg.textContent="Saved to your journal";
   };
 }
 
@@ -326,13 +329,13 @@ function renderBook(){
   const keys=Object.keys(state.entries).sort().reverse();
   const real=keys.filter(k=>!state.entries[k].example).length;
   view.innerHTML=`<div class="stack">
-    <div class="top"><h1>Bogen</h1><span class="date">${keys.length} sider</span></div>
-    ${real===0?`<div class="small">Siderne markeret <span class="example">eksempel</span> er fyldt ud, så du kan se, hvordan bogen ser ud. Du kan fjerne dem under Indstillinger.</div>`:""}
+    <div class="top"><h1>Journal</h1><span class="date">${keys.length} pages</span></div>
+    ${real===0?`<div class="small">Pages marked <span class="example">example</span> are filled in so you can see how the journal looks. You can remove them under More.</div>`:""}
     ${keys.slice(0,40).map(k=>{const e=state.entries[k];const m=MOODS[e.mood-1];const d=new Date(k+"T12:00");
-      return `<article class="entry"><div class="meta"><span class="dot" style="width:14px;height:14px;border-radius:50%;background:${m.color};display:inline-block"></span>${longDate(d)} · ${m.name} ${e.example?'<span class="example">eksempel</span>':""}</div>
+      return `<article class="entry"><div class="meta"><span class="dot" style="width:14px;height:14px;border-radius:50%;background:${m.color};display:inline-block"></span>${longDate(d)} · ${m.name} ${e.example?'<span class="example">example</span>':""}</div>
       <div class="q">${esc(e.q)}</div><p>${esc(e.text)}</p>
-      ${e.photos&&e.photos.length?`<div class="photos" style="margin-top:6px">${e.photos.map(p=>`<img src="${p}" alt="Billede fra ${longDate(d)}">`).join("")}</div>`:""}</article>`}).join("")}
-    ${keys.length>40?`<div class="small">Viser de seneste 40 sider.</div>`:""}
+      ${e.photos&&e.photos.length?`<div class="photos" style="margin-top:6px">${e.photos.map(p=>`<img src="${p}" alt="Photo from ${longDate(d)}">`).join("")}</div>`:""}</article>`}).join("")}
+    ${keys.length>40?`<div class="small">Showing the latest 40 pages.</div>`:""}
   </div>`;
 }
 
@@ -347,7 +350,7 @@ function renderYear(){
       if(d>dim){rows+=`<span class="cell none"></span>`;continue}
       const k=iso(new Date(y,m,d));const e=state.entries[k];
       if(e) counts[e.mood]++;
-      rows+=`<span class="cell ${e?"has":""} ${k===TODAY?"today":""}" ${e?`style="background:${MOODS[e.mood-1].color}"`:""} title="${d}. ${MONTHS_LONG[m]}${e?": "+MOODS[e.mood-1].name:""}"></span>`;
+      rows+=`<span class="cell ${e?"has":""} ${k===TODAY?"today":""}" ${e?`style="background:${MOODS[e.mood-1].color}"`:""} title="${MONTHS_LONG[m]} ${d}${e?": "+MOODS[e.mood-1].name:""}"></span>`;
     }
   }
   const total=counts.reduce((a,b)=>a+b,0)||1;
@@ -355,61 +358,61 @@ function renderYear(){
   // longest streak this year
   let streak=0,cur=0;for(let d=new Date(y,0,1);d<=today;d.setDate(d.getDate()+1)){if(state.entries[iso(d)]){cur++;streak=Math.max(streak,cur)}else cur=0}
   view.innerHTML=`<div class="stack">
-    <div class="top"><h1>${y} i farver</h1><span class="date">${total} dage skrevet</span></div>
-    <p style="margin:0">Oftest har du haft det <b>${MOODS[best-1].name.toLowerCase()}</b>. Din længste stribe er <b>${streak} dage</b> i træk.</p>
-    <div style="overflow-x:auto"><div class="year" role="img" aria-label="Humør for hver dag i ${y}">${rows}</div></div>
+    <div class="top"><h1>${y} in colour</h1><span class="date">${total} days written</span></div>
+    <p style="margin:0">Most often you felt <b>${MOODS[best-1].name.toLowerCase()}</b>. Your longest streak is <b>${streak} days</b> in a row.</p>
+    <div style="overflow-x:auto"><div class="year" role="img" aria-label="Mood for every day in ${y}">${rows}</div></div>
     <div class="legend">${MOODS.map(m=>`<span><i style="background:${m.color}"></i>${m.name}</span>`).join("")}</div>
-    <div><h3>Fordeling</h3><div class="bars" style="margin-top:8px">${MOODS.slice().reverse().map(m=>`<div class="bar"><span>${m.name}</span><div class="track"><div class="fill" style="width:${counts[m.id]/total*100}%;background:${m.color}"></div></div><span style="text-align:right">${counts[m.id]}</span></div>`).join("")}</div></div>
+    <div><h3>Breakdown</h3><div class="bars" style="margin-top:8px">${MOODS.slice().reverse().map(m=>`<div class="bar"><span>${m.name}</span><div class="track"><div class="fill" style="width:${counts[m.id]/total*100}%;background:${m.color}"></div></div><span style="text-align:right">${counts[m.id]}</span></div>`).join("")}</div></div>
   </div>`;
 }
 
 function renderSettings(){
   const P=state.premium;
-  const skins=[["papir","Papir","#fbf6ec","#3b3226"],["rose","Rosa","#fff6f4","#4a2f33"],["skov","Skov","#f6f7ef","#2e3a2c"],["nat","Nat","#22252e","#e9e3d6"]];
+  const skins=[["papir","Paper","#fbf6ec","#3b3226"],["rose","Rose","#fff6f4","#4a2f33"],["skov","Forest","#f6f7ef","#2e3a2c"],["nat","Night","#22252e","#e9e3d6"]];
   view.innerHTML=`<div class="stack">
-    <h1>Indstillinger</h1>
+    <h1>Settings</h1>
     <section class="card">
-      <h3>DAGEN Premium ${P?'<span class="lock-badge">Aktiv</span>':""}</h3>
-      <ul class="feat"><li>Billeder i dine indlæg</li><li>Backup af hele bogen</li><li>Eksport som PDF</li><li>17 ekstra spørgsmål og nyt spørgsmål på bestilling</li><li>Temaerne Rosa, Skov og Nat</li></ul>
-      <div class="small">Gratis for altid: tekstindlæg, humør og året i farver.</div>
-      ${P?`<button class="btn ghost" id="unprem">Stop demo-premium</button>`:`<button class="btn accent" id="prem">Se priser</button>`}
+      <h3>DAGEN Premium ${P?'<span class="lock-badge">Active</span>':""}</h3>
+      <ul class="feat"><li>Photos in your entries</li><li>Backup of the whole journal</li><li>Export as PDF</li><li>10 extra questions and a new question on demand</li><li>Rose, Forest and Night themes</li></ul>
+      <div class="small">Free forever: text entries, mood and your year in colour.</div>
+      ${P?`<button class="btn ghost" id="unprem">End demo Premium</button>`:`<button class="btn accent" id="prem">See prices</button>`}
     </section>
     <section class="card">
-      <h3>Tema ${P?"":'<span class="lock-badge">Premium</span>'}</h3>
+      <h3>Theme ${P?"":'<span class="lock-badge">Premium</span>'}</h3>
       <div class="skins">${skins.map(([id,n,bg,fg])=>`<button class="skin" data-skin="${id}" aria-pressed="${state.skin===id}" style="background:${bg};color:${fg}">${n}</button>`).join("")}</div>
     </section>
     <section class="card">
-      <h3>Lås</h3>
-      <div class="switch"><label for="lockOn">Kræv kode når appen åbnes</label><input type="checkbox" id="lockOn" ${state.lockOn?"checked":""}></div>
-      <div class="row"><button class="btn ghost" id="chpin">Skift kode</button><button class="btn ghost" id="locknow">Lås nu</button></div>
-      <div class="small">I mobil-appen kan du låse op med Face ID eller fingeraftryk.</div>
+      <h3>Lock</h3>
+      <div class="switch"><label for="lockOn">Require passcode when the app opens</label><input type="checkbox" id="lockOn" ${state.lockOn?"checked":""}></div>
+      <div class="row"><button class="btn ghost" id="chpin">Change passcode</button><button class="btn ghost" id="locknow">Lock now</button></div>
+      <div class="small">In the mobile app you can unlock with Face ID or fingerprint.</div>
     </section>
     <section class="card">
-      <h3>Backup og eksport ${P?"":'<span class="lock-badge">Premium</span>'}</h3>
-      <div class="row"><button class="btn ghost" id="backup">Lav backup</button><button class="btn ghost" id="restore">Gendan backup</button><button class="btn ghost" id="pdf">Eksportér som PDF</button></div>
+      <h3>Backup and export ${P?"":'<span class="lock-badge">Premium</span>'}</h3>
+      <div class="row"><button class="btn ghost" id="backup">Back up</button><button class="btn ghost" id="restore">Restore backup</button><button class="btn ghost" id="pdf">Export as PDF</button></div>
       <input type="file" id="restoreFile" accept="application/json,.json" hidden>
       <div class="small" id="bkmsg"></div>
     </section>
     <section class="card">
-      <h3>Eksempelsider</h3>
-      <div class="small">Fjern de udfyldte eksempler, så kun dine egne sider er tilbage.</div>
-      <div class="row"><button class="btn ghost" id="clearex">Fjern eksempler</button></div>
+      <h3>Example pages</h3>
+      <div class="small">Remove the filled-in examples so only your own pages remain.</div>
+      <div class="row"><button class="btn ghost" id="clearex">Remove examples</button></div>
     </section>
   </div>`;
   const $=s=>view.querySelector(s);
-  if($("#prem")) $("#prem").onclick=()=>paywall("Få mere ud af din dagbog");
+  if($("#prem")) $("#prem").onclick=()=>paywall("Get more from your journal");
   if($("#unprem")) $("#unprem").onclick=()=>{state.premium=false;store.set("premium",false);state.skin="papir";store.set("skin","papir");applySkin();state.draft=null;renderSettings()};
-  view.querySelectorAll(".skin").forEach(b=>b.onclick=()=>{if(!P&&b.dataset.skin!=="papir")return paywall("Giv bogen et nyt omslag");state.skin=b.dataset.skin;store.set("skin",state.skin);applySkin();renderSettings()});
+  view.querySelectorAll(".skin").forEach(b=>b.onclick=()=>{if(!P&&b.dataset.skin!=="papir")return paywall("Give your journal a new cover");state.skin=b.dataset.skin;store.set("skin",state.skin);applySkin();renderSettings()});
   $("#lockOn").onchange=e=>{state.lockOn=e.target.checked;store.set("lockOn",state.lockOn)};
   $("#locknow").onclick=()=>showLock("unlock");
   $("#chpin").onclick=()=>showLock("set");
-  $("#backup").onclick=()=>P?backup():paywall("Pas på dine minder med backup");
-  $("#restore").onclick=()=>P?$("#restoreFile").click():paywall("Pas på dine minder med backup");
+  $("#backup").onclick=()=>P?backup():paywall("Keep your memories safe with backup");
+  $("#restore").onclick=()=>P?$("#restoreFile").click():paywall("Keep your memories safe with backup");
   $("#restoreFile").onchange=async ev=>{const f=ev.target.files[0];if(!f)return;
-    try{const j=JSON.parse(await f.text());if(!j.sider)throw 0;Object.assign(state.entries,j.sider);save();$("#bkmsg").textContent=Object.keys(j.sider).length+" sider er gendannet."}
-    catch(_){$("#bkmsg").textContent="Filen kunne ikke læses. Vælg en backup-fil fra DAGEN (.json)."}};
-  $("#pdf").onclick=()=>P?pdfInfo():paywall("Gem bogen som PDF");
-  $("#clearex").onclick=()=>{for(const k in state.entries) if(state.entries[k].example) delete state.entries[k];save();$("#clearex").textContent="Eksempler fjernet";$("#clearex").disabled=true};
+    try{const j=JSON.parse(await f.text());if(!j.sider)throw 0;Object.assign(state.entries,j.sider);save();$("#bkmsg").textContent=Object.keys(j.sider).length+" pages restored."}
+    catch(_){$("#bkmsg").textContent="That file couldn't be read. Choose a DAGEN backup file (.json)."}};
+  $("#pdf").onclick=()=>P?pdfInfo():paywall("Save your journal as a PDF");
+  $("#clearex").onclick=()=>{for(const k in state.entries) if(state.entries[k].example) delete state.entries[k];save();$("#clearex").textContent="Examples removed";$("#clearex").disabled=true};
 }
 
 const modal=document.getElementById("modal"),sheet=document.getElementById("sheet");
@@ -419,14 +422,14 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape")modal.hidden=true});
 
 function paywall(title){
   openSheet(`<h2>${esc(title)}</h2>
-    <div class="small">Billeder, backup, PDF-eksport, flere spørgsmål og temaer.</div>
+    <div class="small">Photos, backup, PDF export, more questions and themes.</div>
     <div class="plans">
-      <button class="plan" data-plan="md" aria-pressed="${state.plan==="md"}"><b>29 kr.</b>pr. måned</button>
-      <button class="plan" data-plan="aar" aria-pressed="${state.plan==="aar"}"><b>199 kr.</b>pr. år<br><span class="small">Spar 149 kr. (43 %)</span></button>
+      <button class="plan" data-plan="md" aria-pressed="${state.plan==="md"}"><b>DKK 29</b>per month</button>
+      <button class="plan" data-plan="aar" aria-pressed="${state.plan==="aar"}"><b>DKK 199</b>per year<br><span class="small">Save DKK 149 (43%)</span></button>
     </div>
-    <button class="btn accent" id="buy">Prøv Premium (demo)</button>
-    <button class="btn ghost" data-close>Ikke nu</button>
-    <div class="small">Dette er en prototype. Der bliver ikke trukket penge.</div>`);
+    <button class="btn accent" id="buy">Try Premium (demo)</button>
+    <button class="btn ghost" data-close>Not now</button>
+    <div class="small">This is a prototype. You won't be charged.</div>`);
   sheet.querySelectorAll(".plan").forEach(b=>b.onclick=()=>{state.plan=b.dataset.plan;store.set("plan",state.plan);sheet.querySelectorAll(".plan").forEach(x=>x.setAttribute("aria-pressed",x===b))});
   sheet.querySelector("#buy").onclick=()=>{state.premium=true;store.set("premium",true);modal.hidden=true;state.draft=null;render()};
 }
@@ -434,21 +437,21 @@ function backup(){
   const data=JSON.stringify({app:"DAGEN",version:1,lavet:new Date().toISOString(),sider:state.entries});
   const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([data],{type:"application/json"}));
   a.download="dagen-backup-"+TODAY+".json";document.body.appendChild(a);a.click();a.remove();
-  const m=view.querySelector("#bkmsg");if(m)m.textContent="Backup gemt som "+a.download+". Gem filen i Filer, iCloud eller Google Drev.";
+  const m=view.querySelector("#bkmsg");if(m)m.textContent="Backup saved as "+a.download+". Keep the file in Files, iCloud or Google Drive.";
 }
 function pdfInfo(){
   const keys=Object.keys(state.entries).sort();
   document.getElementById("print").innerHTML=`<h1>DAGEN ${today.getFullYear()}</h1>`+keys.map(k=>{const e=state.entries[k];
     return `<article><div class="d">${longDate(new Date(k+"T12:00"))} · ${MOODS[e.mood-1].name}</div><i>${esc(e.q)}</i><p>${esc(e.text)}</p>${(e.photos||[]).map(p=>`<img src="${p}" alt="">`).join("")}</article>`}).join("");
-  openSheet(`<h2>Eksport som PDF</h2><div class="small">Udskriftsvinduet åbner. Vælg <b>Gem som PDF</b> (computer/Android) eller <b>Del → Gem i Filer</b> (iPhone).</div>
-    <button class="btn" id="pr">Lav PDF</button><button class="btn ghost" data-close>Luk</button>`);
+  openSheet(`<h2>Export as PDF</h2><div class="small">The print dialog opens. Choose <b>Save as PDF</b> (computer/Android) or <b>Share → Save to Files</b> (iPhone).</div>
+    <button class="btn" id="pr">Create PDF</button><button class="btn ghost" data-close>Close</button>`);
   sheet.querySelector("#pr").onclick=()=>{modal.hidden=true;setTimeout(()=>window.print(),50)};
 }
 
 // lock screen
 const lock=document.getElementById("lock"),pins=document.querySelectorAll("#pins i"),lockMsg=document.getElementById("lockMsg"),pad=document.getElementById("pad");
 let typed="",lockMode="unlock",firstPin="";
-pad.innerHTML=[1,2,3,4,5,6,7,8,9,"",0,"⌫"].map(k=>k===""?"<span></span>":`<button data-k="${k}" aria-label="${k==="⌫"?"Slet":k}">${k}</button>`).join("");
+pad.innerHTML=[1,2,3,4,5,6,7,8,9,"",0,"⌫"].map(k=>k===""?"<span></span>":`<button data-k="${k}" aria-label="${k==="⌫"?"Delete":k}">${k}</button>`).join("");
 pad.onclick=e=>{const k=e.target.dataset.k;if(k===undefined)return;press(k)};
 document.addEventListener("keydown",e=>{if(lock.hidden)return;if(/^\d$/.test(e.key))press(e.key);if(e.key==="Backspace")press("⌫")});
 function press(k){
@@ -458,14 +461,14 @@ function press(k){
 }
 function check(){
   if(lockMode==="unlock"){
-    if(typed===state.pin){lock.hidden=true}else{fail("Forkert kode. Prøv igen.")}
-  }else if(!firstPin){firstPin=typed;lockMsg.textContent="Gentag den nye kode"}
+    if(typed===state.pin){lock.hidden=true}else{fail("Wrong passcode. Try again.")}
+  }else if(!firstPin){firstPin=typed;lockMsg.textContent="Repeat the new passcode"}
   else if(firstPin===typed){state.pin=typed;store.set("pin",typed);lock.hidden=true}
-  else{firstPin="";fail("Koderne var ikke ens. Vælg en ny kode.")}
+  else{firstPin="";fail("The passcodes didn't match. Choose a new one.")}
   typed="";pins.forEach(p=>p.classList.remove("on"));
 }
 function fail(m){lockMsg.textContent=m;const b=document.getElementById("lockbox");b.classList.remove("shake");void b.offsetWidth;b.classList.add("shake")}
-function showLock(mode){lockMode=mode;firstPin="";typed="";pins.forEach(p=>p.classList.remove("on"));lockMsg.textContent=mode==="set"?"Vælg en ny kode på 4 tal":"Indtast din kode";lock.hidden=false}
+function showLock(mode){lockMode=mode;firstPin="";typed="";pins.forEach(p=>p.classList.remove("on"));lockMsg.textContent=mode==="set"?"Choose a new 4-digit passcode":"Enter your passcode";lock.hidden=false}
 
 // install to home screen
 let deferredPrompt=null;
@@ -474,9 +477,9 @@ const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==
 addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredPrompt=e;if(state.tab==="idag"&&!state.draft?.text)renderToday()});
 function installHint(){
   if(standalone||store.get("hideInstall",false))return "";
-  if(deferredPrompt) return `<div class="install"><b>Læg DAGEN på hjemmeskærmen</b><div>Så åbner den som en rigtig app, også uden internet.</div><div class="row"><button class="btn accent" id="ihInstall">Installér app</button><button class="btn ghost" id="ihClose">Ikke nu</button></div></div>`;
-  if(isIOS) return `<div class="install"><b>Læg DAGEN på hjemmeskærmen</b><div>Tryk på <strong>Del</strong> (firkanten med pilen op) nederst i Safari og vælg <strong>Føj til hjemmeskærm</strong>.</div><div class="row"><span></span><button class="btn ghost" id="ihClose">Forstået</button></div></div>`;
-  return `<div class="install"><b>Læg DAGEN på hjemmeskærmen</b><div>Åbn browserens menu (⋮) og vælg <strong>Installér app</strong> eller <strong>Føj til startskærm</strong>.</div><div class="row"><span></span><button class="btn ghost" id="ihClose">Forstået</button></div></div>`;
+  if(deferredPrompt) return `<div class="install"><b>Add DAGEN to your home screen</b><div>It then opens like a real app, even offline.</div><div class="row"><button class="btn accent" id="ihInstall">Install app</button><button class="btn ghost" id="ihClose">Not now</button></div></div>`;
+  if(isIOS) return `<div class="install"><b>Add DAGEN to your home screen</b><div>Tap <strong>Share</strong> (the square with the arrow) in Safari and choose <strong>Add to Home Screen</strong>.</div><div class="row"><span></span><button class="btn ghost" id="ihClose">Got it</button></div></div>`;
+  return `<div class="install"><b>Add DAGEN to your home screen</b><div>Open the browser menu (⋮) and choose <strong>Install app</strong> or <strong>Add to Home screen</strong>.</div><div class="row"><span></span><button class="btn ghost" id="ihClose">Got it</button></div></div>`;
 }
 if("serviceWorker" in navigator && location.protocol.startsWith("http")) navigator.serviceWorker.register("sw.js").catch(()=>{});
 // desktop: scale the phone to fill most of the window height

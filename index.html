@@ -49,7 +49,7 @@ body{background:var(--desk);color:var(--ink);font-family:var(--body);font-size:1
 /* On a phone the device fills the screen; transform makes fixed overlays stay inside it on desktop too */
 .device{position:fixed;inset:0;transform:translateZ(0);display:flex;flex-direction:column;background:var(--paper);overflow:hidden}
 .book{flex:1;min-height:0;background:var(--paper);position:relative;display:flex;flex-direction:column;overflow:hidden;padding-top:env(safe-area-inset-top)}
-.notch,.side{display:none}
+.notch{display:none}
 .book::before{content:"";position:absolute;left:44px;top:0;bottom:0;width:1px;background:var(--margin);opacity:.8;pointer-events:none}
 .ruled{background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 31px,var(--line) 31px,var(--line) 32px);background-position:0 8px}
 main{flex:1;min-height:0;padding:22px 22px 24px 62px;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
@@ -133,9 +133,9 @@ pre.out{max-height:200px;overflow:auto;font-size:12px;background:color-mix(in sr
 .install{border:1.5px dashed var(--accent);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;font-size:15px;background:var(--paper)}
 .install b{font-family:var(--hand);font-size:24px;color:var(--accent);font-weight:700}
 .install .row{justify-content:space-between}
-/* Desktop: show the app inside a phone, with a QR code to open it on a real phone */
+/* Desktop: show the app inside a phone as a prototype */
 @media (min-width:760px) and (min-height:620px) and (hover:hover) and (pointer:fine){
-  body{display:flex;align-items:center;justify-content:center;gap:64px;padding:24px;min-height:100%;
+  body{display:flex;align-items:center;justify-content:center;padding:24px;min-height:100%;
     background:radial-gradient(ellipse at 30% 20%,#e6ddcf,var(--desk) 70%)}
   .device{position:relative;inset:auto;flex:none;width:390px;height:min(844px,calc(100vh - 48px));border-radius:56px;
     border:12px solid #1e1b18;box-shadow:0 0 0 2px #4a443d,0 30px 80px rgba(40,25,10,.35)}
@@ -143,18 +143,13 @@ pre.out{max-height:200px;overflow:auto;font-size:12px;background:color-mix(in sr
   .notch{display:block;position:absolute;top:10px;left:50%;transform:translateX(-50%);width:118px;height:34px;border-radius:20px;background:#1e1b18;z-index:30}
   .statusbar{position:absolute;top:14px;left:34px;right:34px;display:flex;justify-content:space-between;font:600 15px/1 -apple-system,system-ui,sans-serif;color:var(--ink);z-index:29;pointer-events:none}
   nav.tabs{padding-bottom:14px}
-  .side{display:flex;flex-direction:column;gap:18px;max-width:340px}
-  .side h1{font-size:72px}
-  .side p{margin:0;color:var(--ink-soft)}
-  #qr{background:#fff;padding:12px;border-radius:12px;width:max-content;box-shadow:0 6px 20px rgba(60,40,20,.15)}
-  #qr svg{display:block;width:160px;height:160px}
   .install{display:none}
 }
 .statusbar{display:none}
 @media (min-width:760px) and (min-height:620px) and (hover:hover) and (pointer:fine){.statusbar{display:flex}}
 @media print{
   body{background:#fff;display:block;padding:0}
-  .device,.side{display:none!important}
+  .device{display:none!important}
   #print{display:block!important;font-family:var(--body);color:#222}
   #print h1{font-size:54px;margin-bottom:8px}
   #print article{break-inside:avoid;border-bottom:1px solid #ddd;padding:12px 0}
@@ -193,15 +188,8 @@ pre.out{max-height:200px;overflow:auto;font-size:12px;background:color-mix(in sr
 </div>
 </div>
 
-<aside class="side">
-  <h1>DAGEN</h1>
-  <p>En lille dagbog til taknemmelighed. Ét spørgsmål om dagen, dit humør og hele året i farver.</p>
-  <div id="qr"></div>
-  <p>Scan koden med telefonens kamera. Vælg derefter <b>Del</b> og <b>Føj til hjemmeskærm</b> på iPhone, eller <b>Installér app</b> på Android.</p>
-</aside>
 <div id="print"></div>
 
-<script src="qrcode.js"></script>
 <script>
 const MOODS=[
   {id:1,name:"Tung",color:"var(--m1)"},
@@ -491,9 +479,8 @@ function installHint(){
   return `<div class="install"><b>Læg DAGEN på hjemmeskærmen</b><div>Åbn browserens menu (⋮) og vælg <strong>Installér app</strong> eller <strong>Føj til startskærm</strong>.</div><div class="row"><span></span><button class="btn ghost" id="ihClose">Forstået</button></div></div>`;
 }
 if("serviceWorker" in navigator && location.protocol.startsWith("http")) navigator.serviceWorker.register("sw.js").catch(()=>{});
-// desktop: QR code + clock
+// desktop: status bar clock
 const tick=()=>{const n=new Date();document.getElementById("clock").textContent=n.getHours()+":"+String(n.getMinutes()).padStart(2,"0")};tick();setInterval(tick,30000);
-if(window.qrcode&&getComputedStyle(document.querySelector(".side")).display!=="none"){const q=qrcode(0,"M");q.addData(location.href.split("#")[0]);q.make();document.getElementById("qr").innerHTML=q.createSvgTag({cellSize:4,margin:0,scalable:true})}
 
 applySkin();
 go("idag");

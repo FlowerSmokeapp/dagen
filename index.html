@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#fbf6ec">
+<meta name="description" content="DAGEN – en lille dagbog til taknemmelighed. Ét spørgsmål om dagen, dit humør og året i farver.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="DAGEN">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<title>DAGEN dagbog</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+/* Layout: one narrow notebook page centred on a desk; tabs at the bottom like a phone app. */
+:root{
+  --desk:#d9cfbf;
+  --paper:#fbf6ec;
+  --line:#e4d8c3;
+  --ink:#3b3226;
+  --ink-soft:#7a6c58;
+  --accent:#b5543a;
+  --margin:#e7a9a0;
+  --hand:"Caveat", "Segoe Print", "Bradley Hand", cursive;
+  --body:"Lora", Georgia, "Times New Roman", serif;
+  --m1:#6f7fa8; --m2:#93a7b8; --m3:#d9c27a; --m4:#9cc28a; --m5:#e59a5e;
+  color-scheme: light;
+}
+:root[data-skin="nat"]{
+  --desk:#14161c; --paper:#22252e; --line:#323745; --ink:#e9e3d6; --ink-soft:#a39c8e;
+  --accent:#e89a6c; --margin:#5b3a3a; color-scheme: dark;
+}
+:root[data-skin="rose"]{
+  --desk:#e8d3d3; --paper:#fff6f4; --line:#f0d9d6; --ink:#4a2f33; --ink-soft:#8d6a6e;
+  --accent:#b4476a; --margin:#e9b3c2;
+}
+:root[data-skin="skov"]{
+  --desk:#c8d1c1; --paper:#f6f7ef; --line:#dfe3d2; --ink:#2e3a2c; --ink-soft:#6b7a66;
+  --accent:#4f7a4a; --margin:#b9cfa9;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--desk);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6;-webkit-text-size-adjust:100%}
+/* On a phone the device fills the screen; transform makes fixed overlays stay inside it on desktop too */
+.device{position:fixed;inset:0;transform:translateZ(0);display:flex;flex-direction:column;background:var(--paper);overflow:hidden}
+.book{flex:1;min-height:0;background:var(--paper);position:relative;display:flex;flex-direction:column;overflow:hidden;padding-top:env(safe-area-inset-top)}
+.notch,.side{display:none}
+.book::before{content:"";position:absolute;left:44px;top:0;bottom:0;width:1px;background:var(--margin);opacity:.8;pointer-events:none}
+.ruled{background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 31px,var(--line) 31px,var(--line) 32px);background-position:0 8px}
+main{flex:1;min-height:0;padding:22px 22px 24px 62px;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+h1,h2,h3{font-family:var(--hand);font-weight:700;color:var(--ink);text-wrap:balance;margin:0;line-height:1.1}
+h1{font-size:44px}
+h2{font-size:32px}
+h3{font-size:26px}
+.date{font-family:var(--hand);font-size:24px;color:var(--ink-soft)}
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.stack{display:flex;flex-direction:column;gap:20px}
+.prompt{font-family:var(--hand);font-size:30px;color:var(--accent);line-height:1.15}
+.small{font-size:14px;color:var(--ink-soft)}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,textarea:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.moods{display:flex;gap:10px;flex-wrap:wrap}
+.mood{border:1.5px solid var(--line);background:transparent;border-radius:999px;padding:6px 12px 6px 8px;display:flex;align-items:center;gap:8px;font-size:15px}
+.mood .dot{width:20px;height:20px;border-radius:50%}
+.mood[aria-pressed="true"]{border-color:var(--ink);background:color-mix(in srgb,var(--paper) 70%,var(--line))}
+textarea{width:100%;min-height:224px;resize:vertical;border:0;background:transparent;color:var(--ink);
+  font-family:var(--hand);font-size:25px;line-height:32px;padding:0;
+  background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 31px,var(--line) 31px,var(--line) 32px)}
+textarea::placeholder{color:var(--ink-soft);opacity:.7}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{border:0;background:var(--ink);color:var(--paper);border-radius:999px;padding:10px 20px;font-weight:600;font-size:15px}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}
+.btn.accent{background:var(--accent);color:#fff}
+.lock-badge{font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--accent);border:1px solid var(--accent);border-radius:4px;padding:1px 6px;margin-left:6px}
+.photos{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.photos img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:3px;background:#fff;padding:4px;box-shadow:0 2px 6px rgba(0,0,0,.15);transform:rotate(-1.5deg)}
+.photos img:nth-child(2n){transform:rotate(1.8deg)}
+.saved{font-family:var(--hand);font-size:22px;color:var(--m4)}
+nav.tabs{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);background:var(--paper);padding-bottom:env(safe-area-inset-bottom)}
+nav.tabs button{border:0;background:transparent;padding:12px 4px 14px;font-family:var(--hand);font-size:22px;color:var(--ink-soft)}
+nav.tabs button[aria-current="page"]{color:var(--ink);box-shadow:inset 0 3px 0 var(--accent)}
+.entry{border-bottom:1px dashed var(--line);padding-bottom:16px;display:flex;flex-direction:column;gap:4px}
+.entry .meta{display:flex;align-items:center;gap:8px;font-family:var(--hand);font-size:22px;color:var(--ink-soft)}
+.entry .q{font-style:italic;color:var(--ink-soft);font-size:15px}
+.entry p{margin:0;white-space:pre-wrap}
+.example{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);border:1px dashed var(--ink-soft);border-radius:4px;padding:0 5px}
+/* year in colours */
+.year{display:grid;grid-template-columns:26px repeat(31,1fr);gap:1.5px;font-size:11px;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+.year .cell{aspect-ratio:1;border-radius:2px;background:var(--line);opacity:.55}
+.year .cell.has{opacity:1}
+.year .cell.none{background:transparent;opacity:1}
+.year .cell.today{outline:1.5px solid var(--ink);outline-offset:0}
+.year .mlab{font-family:var(--hand);font-size:16px;line-height:1;align-self:center}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:14px}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{width:12px;height:12px;border-radius:2px;display:inline-block}
+.bars{display:flex;flex-direction:column;gap:6px}
+.bar{display:grid;grid-template-columns:90px 1fr 34px;gap:8px;align-items:center;font-size:14px;font-variant-numeric:tabular-nums}
+.bar .track{height:10px;background:var(--line);border-radius:5px;overflow:hidden}
+.bar .fill{height:100%;border-radius:5px}
+/* settings */
+.card{border:1.5px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px;background:color-mix(in srgb,var(--paper) 85%,#fff)}
+.switch{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.plans{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.plan{border:1.5px solid var(--line);border-radius:10px;padding:12px;text-align:left;background:transparent}
+.plan[aria-pressed="true"]{border-color:var(--accent)}
+.plan b{font-family:var(--hand);font-size:28px;display:block;line-height:1}
+ul.feat{margin:0;padding-left:18px}
+.skins{display:flex;gap:10px;flex-wrap:wrap}
+.skin{width:56px;height:56px;border-radius:8px;border:2px solid var(--line);position:relative;font-size:12px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:3px}
+.skin[aria-pressed="true"]{border-color:var(--accent)}
+/* lock + modal */
+.overlay{position:fixed;inset:0;padding-top:max(16px,env(safe-area-inset-top));background:var(--desk);display:flex;align-items:center;justify-content:center;padding:16px;z-index:10}
+.overlay[hidden]{display:none}
+.lockbox{background:var(--paper);border-radius:14px;padding:28px 24px;width:100%;max-width:340px;text-align:center;display:flex;flex-direction:column;gap:16px;box-shadow:0 14px 40px rgba(0,0,0,.2)}
+.pins{display:flex;justify-content:center;gap:14px}
+.pins i{width:14px;height:14px;border-radius:50%;border:1.5px solid var(--ink)}
+.pins i.on{background:var(--ink)}
+.pad{display:grid;grid-template-columns:repeat(3,64px);gap:12px;justify-content:center}
+.pad button{height:64px;border-radius:50%;border:1.5px solid var(--line);background:transparent;font-size:24px}
+.shake{animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+@media (prefers-reduced-motion:reduce){.shake{animation:none}}
+.modal{background:rgba(30,20,10,.45)}
+.sheet{background:var(--paper);border-radius:14px;padding:22px;max-width:420px;width:100%;display:flex;flex-direction:column;gap:12px}
+pre.out{max-height:200px;overflow:auto;font-size:12px;background:color-mix(in srgb,var(--paper) 80%,var(--line));padding:10px;border-radius:6px;white-space:pre-wrap;margin:0}
+@media (max-width:420px){main{padding-left:54px;padding-right:16px}.book::before{left:38px}h1{font-size:38px}.pad{grid-template-columns:repeat(3,58px)}.pad button{height:58px}}
+.install{border:1.5px dashed var(--accent);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;font-size:15px;background:var(--paper)}
+.install b{font-family:var(--hand);font-size:24px;color:var(--accent);font-weight:700}
+.install .row{justify-content:space-between}
+/* Desktop: show the app inside a phone, with a QR code to open it on a real phone */
+@media (min-width:760px) and (min-height:620px) and (hover:hover) and (pointer:fine){
+  body{display:flex;align-items:center;justify-content:center;gap:64px;padding:24px;min-height:100%;
+    background:radial-gradient(ellipse at 30% 20%,#e6ddcf,var(--desk) 70%)}
+  .device{position:relative;inset:auto;flex:none;width:390px;height:min(844px,calc(100vh - 48px));border-radius:56px;
+    border:12px solid #1e1b18;box-shadow:0 0 0 2px #4a443d,0 30px 80px rgba(40,25,10,.35)}
+  .book{padding-top:44px}
+  .notch{display:block;position:absolute;top:10px;left:50%;transform:translateX(-50%);width:118px;height:34px;border-radius:20px;background:#1e1b18;z-index:30}
+  .statusbar{position:absolute;top:14px;left:34px;right:34px;display:flex;justify-content:space-between;font:600 15px/1 -apple-system,system-ui,sans-serif;color:var(--ink);z-index:29;pointer-events:none}
+  nav.tabs{padding-bottom:14px}
+  .side{display:flex;flex-direction:column;gap:18px;max-width:340px}
+  .side h1{font-size:72px}
+  .side p{margin:0;color:var(--ink-soft)}
+  #qr{background:#fff;padding:12px;border-radius:12px;width:max-content;box-shadow:0 6px 20px rgba(60,40,20,.15)}
+  #qr svg{display:block;width:160px;height:160px}
+  .install{display:none}
+}
+.statusbar{display:none}
+@media (min-width:760px) and (min-height:620px) and (hover:hover) and (pointer:fine){.statusbar{display:flex}}
+@media print{
+  body{background:#fff;display:block;padding:0}
+  .device,.side{display:none!important}
+  #print{display:block!important;font-family:var(--body);color:#222}
+  #print h1{font-size:54px;margin-bottom:8px}
+  #print article{break-inside:avoid;border-bottom:1px solid #ddd;padding:12px 0}
+  #print .d{font-family:var(--hand);font-size:22px}
+  #print img{width:30%;margin:4px}
+}
+#print{display:none}
+</style>
+</head>
+<body>
+<div class="device">
+<div class="notch" aria-hidden="true"></div>
+<div class="statusbar" aria-hidden="true"><span id="clock">9:41</span><span>●●● ▮</span></div>
+<div class="book">
+  <main id="view" class="ruled" tabindex="-1"></main>
+  <nav class="tabs" aria-label="Sider">
+    <button data-tab="idag">I dag</button>
+    <button data-tab="bog">Bogen</button>
+    <button data-tab="aar">Året</button>
+    <button data-tab="mig">Mere</button>
+  </nav>
+</div>
+
+<div class="overlay" id="lock" hidden>
+  <div class="lockbox" id="lockbox">
+    <h2>DAGEN</h2>
+    <div class="small" id="lockMsg">Indtast din kode</div>
+    <div class="pins" id="pins"><i></i><i></i><i></i><i></i></div>
+    <div class="pad" id="pad"></div>
+    <div class="small">Demo-kode: 1234. Face ID bruges i mobil-appen.</div>
+  </div>
+</div>
+
+<div class="overlay modal" id="modal" hidden>
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true"></div>
+</div>
+</div>
+
+<aside class="side">
+  <h1>DAGEN</h1>
+  <p>En lille dagbog til taknemmelighed. Ét spørgsmål om dagen, dit humør og hele året i farver.</p>
+  <div id="qr"></div>
+  <p>Scan koden med telefonens kamera. Vælg derefter <b>Del</b> og <b>Føj til hjemmeskærm</b> på iPhone, eller <b>Installér app</b> på Android.</p>
+</aside>
+<div id="print"></div>
+
+<script src="qrcode.js"></script>
+<script>
+const MOODS=[
+  {id:1,name:"Tung",color:"var(--m1)"},
+  {id:2,name:"Stille",color:"var(--m2)"},
+  {id:3,name:"Okay",color:"var(--m3)"},
+  {id:4,name:"God",color:"var(--m4)"},
+  {id:5,name:"Strålende",color:"var(--m5)"}
+];
+const FREE_Q=[
+  "Hvad gik godt i dag?","Hvem er du taknemmelig for lige nu?","Hvad fik dig til at smile i dag?",
+  "Hvad lærte du i dag?","Hvilket lille øjeblik vil du huske?","Hvad gjorde du godt for dig selv i dag?",
+  "Hvad glæder du dig til i morgen?"
+];
+const PREM_Q=[
+  "Hvilken lyd, duft eller smag husker du fra i dag?","Hvad ville du sige til dig selv for et år siden?",
+  "Hvornår følte du dig mest som dig selv i dag?","Hvad slap du i dag, som du ikke behøvede at bære?",
+  "Hvem gjorde din dag lidt lettere, og ved de det?","Hvad var svært i dag, og hvordan klarede du det?",
+  "Hvilket sted var du glad for at være i dag?","Hvad vil du gøre mere af i næste uge?",
+  "Hvad er du stolt af, som ingen andre har set?","Hvis i dag var et billede, hvad forestillede det så?"
+];
+const MONTHS=["jan","feb","mar","apr","maj","jun","jul","aug","sep","okt","nov","dec"];
+const MONTHS_LONG=["januar","februar","marts","april","maj","juni","juli","august","september","oktober","november","december"];
+const DAYS=["søndag","mandag","tirsdag","onsdag","torsdag","fredag","lørdag"];
+
+const store={
+  get(k,d){try{const v=localStorage.getItem("dagen."+k);return v?JSON.parse(v):d}catch(e){return d}},
+  set(k,v){try{localStorage.setItem("dagen."+k,JSON.stringify(v))}catch(e){}}
+};
+const iso=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const today=new Date(); const TODAY=iso(today);
+const dayOfYear=d=>Math.floor((d-new Date(d.getFullYear(),0,0))/864e5);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+let state={
+  entries:store.get("entries",null),
+  premium:store.get("premium",false),
+  plan:store.get("plan","aar"),
+  skin:store.get("skin","papir"),
+  pin:store.get("pin","1234"),
+  lockOn:store.get("lockOn",false),
+  tab:"idag", draft:null
+};
+
+// Clearly marked example entries so the book and year view open with content
+function seed(){
+  const out={}; const y=today.getFullYear();
+  const texts=[
+    "Gik en tur langs havnen med Ida. Solen kom frem lige da vi satte os.",
+    "Fik endelig ryddet skrivebordet. Det føles som at trække vejret igen.",
+    "Mormor ringede bare for at sige hej.",
+    "Lang dag på arbejdet, men kaffen i pausen var god.",
+    "Bagte boller og huset duftede af kardemomme hele eftermiddagen.",
+    "Regnvejr. Læste tre kapitler under tæppet.",
+    "Cyklede hjem i modvind og grinede af det."
+  ];
+  let seedN=7;
+  const rnd=()=>{seedN=(seedN*9301+49297)%233280;return seedN/233280};
+  for(let d=new Date(y,0,1);d<today;d.setDate(d.getDate()+1)){
+    if(rnd()<0.42) continue;
+    const s=Math.sin(dayOfYear(d)/58)+rnd()*1.6;
+    const mood=Math.max(1,Math.min(5,Math.round(2.4+s)));
+    out[iso(d)]={mood,q:FREE_Q[dayOfYear(d)%FREE_Q.length],text:texts[Math.floor(rnd()*texts.length)],photos:[],example:true};
+  }
+  return out;
+}
+if(!state.entries){state.entries=seed();store.set("entries",state.entries)}
+
+function questionFor(dateStr){
+  const d=new Date(dateStr+"T12:00");
+  const pool=state.premium?FREE_Q.concat(PREM_Q):FREE_Q;
+  return pool[dayOfYear(d)%pool.length];
+}
+function save(){store.set("entries",state.entries)}
+function applySkin(){document.documentElement.dataset.skin=state.skin;document.querySelector("meta[name=theme-color]").content=getComputedStyle(document.documentElement).getPropertyValue("--paper").trim()}
+
+const view=document.getElementById("view");
+function go(tab){state.tab=tab;document.querySelectorAll("nav.tabs button").forEach(b=>b.setAttribute("aria-current",b.dataset.tab===tab?"page":"false"));render();view.scrollTop=0}
+document.querySelectorAll("nav.tabs button").forEach(b=>b.onclick=()=>go(b.dataset.tab));
+
+function render(){({idag:renderToday,bog:renderBook,aar:renderYear,mig:renderSettings})[state.tab]()}
+
+function longDate(d){return DAYS[d.getDay()]+" "+d.getDate()+". "+MONTHS_LONG[d.getMonth()]}
+
+function renderToday(){
+  const e=state.entries[TODAY];
+  if(!state.draft) state.draft=e?{...e,photos:[...(e.photos||[])]}:{mood:0,q:questionFor(TODAY),text:"",photos:[]};
+  const d=state.draft;
+  view.innerHTML=`<div class="stack">
+    ${installHint()}
+    <div class="top"><h1>I dag</h1><span class="date">${longDate(today)}</span></div>
+    <div><div class="small">Dagens spørgsmål</div><div class="prompt" id="q">${esc(d.q)}</div>
+      ${state.premium?`<button class="btn ghost" id="newq" style="margin-top:8px;padding:4px 14px;font-size:13px">Vis et andet spørgsmål</button>`:""}</div>
+    <div><div class="small" id="moodlbl">Hvordan har du det?</div>
+      <div class="moods" role="group" aria-labelledby="moodlbl">${MOODS.map(m=>`<button class="mood" data-m="${m.id}" aria-pressed="${d.mood===m.id}"><span class="dot" style="background:${m.color}"></span>${m.name}</button>`).join("")}</div></div>
+    <label for="txt" class="small">Skriv løs</label>
+    <textarea id="txt" placeholder="Det, der gik godt i dag, var …">${esc(d.text)}</textarea>
+    <div>
+      <div class="row"><span class="small">Billeder</span>${state.premium?"":`<span class="lock-badge">Premium</span>`}</div>
+      <div class="photos" id="photos" style="margin-top:8px">${d.photos.map(p=>`<img src="${p}" alt="Billede fra dagen">`).join("")}</div>
+      <div class="row" style="margin-top:10px">
+        <input type="file" id="file" accept="image/*" multiple hidden>
+        <button class="btn ghost" id="addph">Tilføj billede</button>
+      </div>
+    </div>
+    <div class="row"><button class="btn" id="save">Gem dagen</button><span class="saved" id="savedmsg">${e?"Gemt i bogen":""}</span></div>
+  </div>`;
+  const ih=view.querySelector("#ihClose");if(ih) ih.onclick=()=>{store.set("hideInstall",true);renderToday()};
+  const ib=view.querySelector("#ihInstall");if(ib) ib.onclick=async()=>{deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;renderToday()};
+  view.querySelectorAll(".mood").forEach(b=>b.onclick=()=>{d.mood=+b.dataset.m;view.querySelectorAll(".mood").forEach(x=>x.setAttribute("aria-pressed",x===b))});
+  view.querySelector("#txt").oninput=ev=>{d.text=ev.target.value;view.querySelector("#savedmsg").textContent=""};
+  const nq=view.querySelector("#newq");
+  if(nq) nq.onclick=()=>{const pool=FREE_Q.concat(PREM_Q);let q;do{q=pool[Math.floor(Math.random()*pool.length)]}while(q===d.q);d.q=q;view.querySelector("#q").textContent=q};
+  view.querySelector("#addph").onclick=()=>state.premium?view.querySelector("#file").click():paywall("Gem billeder sammen med dine dage");
+  view.querySelector("#file").onchange=async ev=>{
+    for(const f of [...ev.target.files].slice(0,6-d.photos.length)) d.photos.push(await shrink(f));
+    renderToday();
+  };
+  view.querySelector("#save").onclick=()=>{
+    const msg=view.querySelector("#savedmsg");
+    if(!d.mood){msg.textContent="Vælg dit humør først";msg.style.color="var(--accent)";return}
+    if(!d.text.trim()){msg.textContent="Skriv mindst en linje";msg.style.color="var(--accent)";return}
+    state.entries[TODAY]={mood:d.mood,q:d.q,text:d.text.trim(),photos:d.photos};save();
+    msg.style.color="";msg.textContent="Gemt i bogen";
+  };
+}
+
+function shrink(file){
+  return new Promise(res=>{const img=new Image();img.onload=()=>{const c=document.createElement("canvas");const s=Math.min(1,480/Math.max(img.width,img.height));
+    c.width=img.width*s;c.height=img.height*s;c.getContext("2d").drawImage(img,0,0,c.width,c.height);res(c.toDataURL("image/jpeg",.8));URL.revokeObjectURL(img.src)};
+    img.src=URL.createObjectURL(file)});
+}
+
+function renderBook(){
+  const keys=Object.keys(state.entries).sort().reverse();
+  const real=keys.filter(k=>!state.entries[k].example).length;
+  view.innerHTML=`<div class="stack">
+    <div class="top"><h1>Bogen</h1><span class="date">${keys.length} sider</span></div>
+    ${real===0?`<div class="small">Siderne markeret <span class="example">eksempel</span> er fyldt ud, så du kan se, hvordan bogen ser ud. Du kan fjerne dem under Indstillinger.</div>`:""}
+    ${keys.slice(0,40).map(k=>{const e=state.entries[k];const m=MOODS[e.mood-1];const d=new Date(k+"T12:00");
+      return `<article class="entry"><div class="meta"><span class="dot" style="width:14px;height:14px;border-radius:50%;background:${m.color};display:inline-block"></span>${longDate(d)} · ${m.name} ${e.example?'<span class="example">eksempel</span>':""}</div>
+      <div class="q">${esc(e.q)}</div><p>${esc(e.text)}</p>
+      ${e.photos&&e.photos.length?`<div class="photos" style="margin-top:6px">${e.photos.map(p=>`<img src="${p}" alt="Billede fra ${longDate(d)}">`).join("")}</div>`:""}</article>`}).join("")}
+    ${keys.length>40?`<div class="small">Viser de seneste 40 sider.</div>`:""}
+  </div>`;
+}
+
+function renderYear(){
+  const y=today.getFullYear();
+  const counts=[0,0,0,0,0,0];
+  let rows="<span></span>"+Array.from({length:31},(_,i)=>`<span style="text-align:center">${(i+1)%5===0||i===0?i+1:""}</span>`).join("");
+  for(let m=0;m<12;m++){
+    rows+=`<span class="mlab">${MONTHS[m]}</span>`;
+    const dim=new Date(y,m+1,0).getDate();
+    for(let d=1;d<=31;d++){
+      if(d>dim){rows+=`<span class="cell none"></span>`;continue}
+      const k=iso(new Date(y,m,d));const e=state.entries[k];
+      if(e) counts[e.mood]++;
+      rows+=`<span class="cell ${e?"has":""} ${k===TODAY?"today":""}" ${e?`style="background:${MOODS[e.mood-1].color}"`:""} title="${d}. ${MONTHS_LONG[m]}${e?": "+MOODS[e.mood-1].name:""}"></span>`;
+    }
+  }
+  const total=counts.reduce((a,b)=>a+b,0)||1;
+  const best=[1,2,3,4,5].reduce((a,b)=>counts[b]>counts[a]?b:a,1);
+  // longest streak this year
+  let streak=0,cur=0;for(let d=new Date(y,0,1);d<=today;d.setDate(d.getDate()+1)){if(state.entries[iso(d)]){cur++;streak=Math.max(streak,cur)}else cur=0}
+  view.innerHTML=`<div class="stack">
+    <div class="top"><h1>${y} i farver</h1><span class="date">${total} dage skrevet</span></div>
+    <p style="margin:0">Oftest har du haft det <b>${MOODS[best-1].name.toLowerCase()}</b>. Din længste stribe er <b>${streak} dage</b> i træk.</p>
+    <div style="overflow-x:auto"><div class="year" role="img" aria-label="Humør for hver dag i ${y}">${rows}</div></div>
+    <div class="legend">${MOODS.map(m=>`<span><i style="background:${m.color}"></i>${m.name}</span>`).join("")}</div>
+    <div><h3>Fordeling</h3><div class="bars" style="margin-top:8px">${MOODS.slice().reverse().map(m=>`<div class="bar"><span>${m.name}</span><div class="track"><div class="fill" style="width:${counts[m.id]/total*100}%;background:${m.color}"></div></div><span style="text-align:right">${counts[m.id]}</span></div>`).join("")}</div></div>
+  </div>`;
+}
+
+function renderSettings(){
+  const P=state.premium;
+  const skins=[["papir","Papir","#fbf6ec","#3b3226"],["rose","Rosa","#fff6f4","#4a2f33"],["skov","Skov","#f6f7ef","#2e3a2c"],["nat","Nat","#22252e","#e9e3d6"]];
+  view.innerHTML=`<div class="stack">
+    <h1>Indstillinger</h1>
+    <section class="card">
+      <h3>DAGEN Premium ${P?'<span class="lock-badge">Aktiv</span>':""}</h3>
+      <ul class="feat"><li>Billeder i dine indlæg</li><li>Backup af hele bogen</li><li>Eksport som PDF</li><li>17 ekstra spørgsmål og nyt spørgsmål på bestilling</li><li>Temaerne Rosa, Skov og Nat</li></ul>
+      <div class="small">Gratis for altid: tekstindlæg, humør og året i farver.</div>
+      ${P?`<button class="btn ghost" id="unprem">Stop demo-premium</button>`:`<button class="btn accent" id="prem">Se priser</button>`}
+    </section>
+    <section class="card">
+      <h3>Tema ${P?"":'<span class="lock-badge">Premium</span>'}</h3>
+      <div class="skins">${skins.map(([id,n,bg,fg])=>`<button class="skin" data-skin="${id}" aria-pressed="${state.skin===id}" style="background:${bg};color:${fg}">${n}</button>`).join("")}</div>
+    </section>
+    <section class="card">
+      <h3>Lås</h3>
+      <div class="switch"><label for="lockOn">Kræv kode når appen åbnes</label><input type="checkbox" id="lockOn" ${state.lockOn?"checked":""}></div>
+      <div class="row"><button class="btn ghost" id="chpin">Skift kode</button><button class="btn ghost" id="locknow">Lås nu</button></div>
+      <div class="small">I mobil-appen kan du låse op med Face ID eller fingeraftryk.</div>
+    </section>
+    <section class="card">
+      <h3>Backup og eksport ${P?"":'<span class="lock-badge">Premium</span>'}</h3>
+      <div class="row"><button class="btn ghost" id="backup">Lav backup</button><button class="btn ghost" id="restore">Gendan backup</button><button class="btn ghost" id="pdf">Eksportér som PDF</button></div>
+      <input type="file" id="restoreFile" accept="application/json,.json" hidden>
+      <div class="small" id="bkmsg"></div>
+    </section>
+    <section class="card">
+      <h3>Eksempelsider</h3>
+      <div class="small">Fjern de udfyldte eksempler, så kun dine egne sider er tilbage.</div>
+      <div class="row"><button class="btn ghost" id="clearex">Fjern eksempler</button></div>
+    </section>
+  </div>`;
+  const $=s=>view.querySelector(s);
+  if($("#prem")) $("#prem").onclick=()=>paywall("Få mere ud af din dagbog");
+  if($("#unprem")) $("#unprem").onclick=()=>{state.premium=false;store.set("premium",false);state.skin="papir";store.set("skin","papir");applySkin();state.draft=null;renderSettings()};
+  view.querySelectorAll(".skin").forEach(b=>b.onclick=()=>{if(!P&&b.dataset.skin!=="papir")return paywall("Giv bogen et nyt omslag");state.skin=b.dataset.skin;store.set("skin",state.skin);applySkin();renderSettings()});
+  $("#lockOn").onchange=e=>{state.lockOn=e.target.checked;store.set("lockOn",state.lockOn)};
+  $("#locknow").onclick=()=>showLock("unlock");
+  $("#chpin").onclick=()=>showLock("set");
+  $("#backup").onclick=()=>P?backup():paywall("Pas på dine minder med backup");
+  $("#restore").onclick=()=>P?$("#restoreFile").click():paywall("Pas på dine minder med backup");
+  $("#restoreFile").onchange=async ev=>{const f=ev.target.files[0];if(!f)return;
+    try{const j=JSON.parse(await f.text());if(!j.sider)throw 0;Object.assign(state.entries,j.sider);save();$("#bkmsg").textContent=Object.keys(j.sider).length+" sider er gendannet."}
+    catch(_){$("#bkmsg").textContent="Filen kunne ikke læses. Vælg en backup-fil fra DAGEN (.json)."}};
+  $("#pdf").onclick=()=>P?pdfInfo():paywall("Gem bogen som PDF");
+  $("#clearex").onclick=()=>{for(const k in state.entries) if(state.entries[k].example) delete state.entries[k];save();$("#clearex").textContent="Eksempler fjernet";$("#clearex").disabled=true};
+}
+
+const modal=document.getElementById("modal"),sheet=document.getElementById("sheet");
+function openSheet(html){sheet.innerHTML=html;modal.hidden=false;const c=sheet.querySelector("[data-close]");c&&c.addEventListener("click",()=>modal.hidden=true);sheet.querySelector("button")?.focus()}
+modal.onclick=e=>{if(e.target===modal)modal.hidden=true};
+document.addEventListener("keydown",e=>{if(e.key==="Escape")modal.hidden=true});
+
+function paywall(title){
+  openSheet(`<h2>${esc(title)}</h2>
+    <div class="small">Billeder, backup, PDF-eksport, flere spørgsmål og temaer.</div>
+    <div class="plans">
+      <button class="plan" data-plan="md" aria-pressed="${state.plan==="md"}"><b>29 kr.</b>pr. måned</button>
+      <button class="plan" data-plan="aar" aria-pressed="${state.plan==="aar"}"><b>199 kr.</b>pr. år<br><span class="small">Spar 149 kr. (43 %)</span></button>
+    </div>
+    <button class="btn accent" id="buy">Prøv Premium (demo)</button>
+    <button class="btn ghost" data-close>Ikke nu</button>
+    <div class="small">Dette er en prototype. Der bliver ikke trukket penge.</div>`);
+  sheet.querySelectorAll(".plan").forEach(b=>b.onclick=()=>{state.plan=b.dataset.plan;store.set("plan",state.plan);sheet.querySelectorAll(".plan").forEach(x=>x.setAttribute("aria-pressed",x===b))});
+  sheet.querySelector("#buy").onclick=()=>{state.premium=true;store.set("premium",true);modal.hidden=true;state.draft=null;render()};
+}
+function backup(){
+  const data=JSON.stringify({app:"DAGEN",version:1,lavet:new Date().toISOString(),sider:state.entries});
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([data],{type:"application/json"}));
+  a.download="dagen-backup-"+TODAY+".json";document.body.appendChild(a);a.click();a.remove();
+  const m=view.querySelector("#bkmsg");if(m)m.textContent="Backup gemt som "+a.download+". Gem filen i Filer, iCloud eller Google Drev.";
+}
+function pdfInfo(){
+  const keys=Object.keys(state.entries).sort();
+  document.getElementById("print").innerHTML=`<h1>DAGEN ${today.getFullYear()}</h1>`+keys.map(k=>{const e=state.entries[k];
+    return `<article><div class="d">${longDate(new Date(k+"T12:00"))} · ${MOODS[e.mood-1].name}</div><i>${esc(e.q)}</i><p>${esc(e.text)}</p>${(e.photos||[]).map(p=>`<img src="${p}" alt="">`).join("")}</article>`}).join("");
+  openSheet(`<h2>Eksport som PDF</h2><div class="small">Udskriftsvinduet åbner. Vælg <b>Gem som PDF</b> (computer/Android) eller <b>Del → Gem i Filer</b> (iPhone).</div>
+    <button class="btn" id="pr">Lav PDF</button><button class="btn ghost" data-close>Luk</button>`);
+  sheet.querySelector("#pr").onclick=()=>{modal.hidden=true;setTimeout(()=>window.print(),50)};
+}
+
+// lock screen
+const lock=document.getElementById("lock"),pins=document.querySelectorAll("#pins i"),lockMsg=document.getElementById("lockMsg"),pad=document.getElementById("pad");
+let typed="",lockMode="unlock",firstPin="";
+pad.innerHTML=[1,2,3,4,5,6,7,8,9,"",0,"⌫"].map(k=>k===""?"<span></span>":`<button data-k="${k}" aria-label="${k==="⌫"?"Slet":k}">${k}</button>`).join("");
+pad.onclick=e=>{const k=e.target.dataset.k;if(k===undefined)return;press(k)};
+document.addEventListener("keydown",e=>{if(lock.hidden)return;if(/^\d$/.test(e.key))press(e.key);if(e.key==="Backspace")press("⌫")});
+function press(k){
+  if(k==="⌫")typed=typed.slice(0,-1);else if(typed.length<4)typed+=k;
+  pins.forEach((p,i)=>p.classList.toggle("on",i<typed.length));
+  if(typed.length===4) setTimeout(check,120);
+}
+function check(){
+  if(lockMode==="unlock"){
+    if(typed===state.pin){lock.hidden=true}else{fail("Forkert kode. Prøv igen.")}
+  }else if(!firstPin){firstPin=typed;lockMsg.textContent="Gentag den nye kode"}
+  else if(firstPin===typed){state.pin=typed;store.set("pin",typed);lock.hidden=true}
+  else{firstPin="";fail("Koderne var ikke ens. Vælg en ny kode.")}
+  typed="";pins.forEach(p=>p.classList.remove("on"));
+}
+function fail(m){lockMsg.textContent=m;const b=document.getElementById("lockbox");b.classList.remove("shake");void b.offsetWidth;b.classList.add("shake")}
+function showLock(mode){lockMode=mode;firstPin="";typed="";pins.forEach(p=>p.classList.remove("on"));lockMsg.textContent=mode==="set"?"Vælg en ny kode på 4 tal":"Indtast din kode";lock.hidden=false}
+
+// install to home screen
+let deferredPrompt=null;
+const standalone=matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
+const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredPrompt=e;if(state.tab==="idag"&&!state.draft?.text)renderToday()});
+function installHint(){
+  if(standalone||store.get("hideInstall",false))return "";
+  if(deferredPrompt) return `<div class="install"><b>Læg DAGEN på hjemmeskærmen</b><div>Så åbner den som en rigtig app, også uden internet.</div><div class="row"><button class="btn accent" id="ihInstall">Installér app</button><button class="btn ghost" id="ihClose">Ikke nu</button></div></div>`;
+  if(isIOS) return `<div class="install"><b>Læg DAGEN på hjemmeskærmen</b><div>Tryk på <strong>Del</strong> (firkanten med pilen op) nederst i Safari og vælg <strong>Føj til hjemmeskærm</strong>.</div><div class="row"><span></span><button class="btn ghost" id="ihClose">Forstået</button></div></div>`;
+  return `<div class="install"><b>Læg DAGEN på hjemmeskærmen</b><div>Åbn browserens menu (⋮) og vælg <strong>Installér app</strong> eller <strong>Føj til startskærm</strong>.</div><div class="row"><span></span><button class="btn ghost" id="ihClose">Forstået</button></div></div>`;
+}
+if("serviceWorker" in navigator && location.protocol.startsWith("http")) navigator.serviceWorker.register("sw.js").catch(()=>{});
+// desktop: QR code + clock
+const tick=()=>{const n=new Date();document.getElementById("clock").textContent=n.getHours()+":"+String(n.getMinutes()).padStart(2,"0")};tick();setInterval(tick,30000);
+if(window.qrcode&&getComputedStyle(document.querySelector(".side")).display!=="none"){const q=qrcode(0,"M");q.addData(location.href.split("#")[0]);q.make();document.getElementById("qr").innerHTML=q.createSvgTag({cellSize:4,margin:0,scalable:true})}
+
+applySkin();
+go("idag");
+if(state.lockOn) showLock("unlock");
+</script>
+</body>
+</html>
